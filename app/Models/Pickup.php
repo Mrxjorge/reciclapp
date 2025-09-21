@@ -9,25 +9,31 @@ class Pickup extends Model
 {
     use HasFactory;
 
-    // Campos que se pueden asignar en masa desde los formularios
+    // Campos asignables
     protected $fillable = [
         'user_id',
-        'tipo_residuo',
-        'modalidad',          // default 'programada' en BD
+        'tipo_residuo',     // organico | inorganico | peligroso
+        'modalidad',        // null para orgánico/peligroso; 'programada' o 'demanda' para inorgánico
+        'direccion',
+        'localidad_id',
         'fecha_programada',
-        'hora_programada',
-        'estado',             // default 'programada' en BD
+        'hora_programada',  // TIME en BD; manejar como string
+        'estado',           // por defecto 'programada' en BD
     ];
 
-    // Casts útiles para manejar fechas/horas
+    // Casts
     protected $casts = [
         'fecha_programada' => 'date',
-        'hora_programada'  => 'datetime:H:i',
     ];
 
-    // Relación con el usuario dueño de la programación
+    // Relaciones
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function localidad()
+    {
+        return $this->belongsTo(\App\Models\Localidad::class, 'localidad_id');
     }
 }

@@ -19,9 +19,7 @@ class RegisteredUserController extends Controller
      */
     public function create(): View
     {
-        // La vista leerá las localidades directamente del modelo (select en Blade),
-        // así que no es necesario pasar datos aquí.
-        return view('auth.register');
+        return view('auth.register'); // La vista ya no muestra localidad ni dirección
     }
 
     /**
@@ -32,31 +30,28 @@ class RegisteredUserController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'name'         => ['required', 'string', 'max:255'],
-            'email'        => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
-            'password'     => ['required', 'confirmed', Rules\Password::defaults()],
+            'name'     => ['required', 'string', 'max:255'],
+            'email'    => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
 
-            // NUEVOS CAMPOS
-            'cedula'       => ['required', 'string', 'max:30', 'unique:users,cedula'],
-            'direccion'    => ['required', 'string', 'max:255'],
-            'telefono'     => ['required', 'string', 'max:30'],
-            'localidad_id' => ['required', 'exists:localidades,id'],
+            // Solo estos extras en el registro
+            'cedula'   => ['required', 'string', 'max:30', 'unique:users,cedula'],
+            'telefono' => ['required', 'string', 'max:30'],
+            // OJO: NO validar direccion ni localidad_id aquí
         ]);
 
         $user = User::create([
-            'name'         => $request->name,
-            'email'        => $request->email,
-            'password'     => Hash::make($request->password),
+            'name'     => $request->name,
+            'email'    => $request->email,
+            'password' => Hash::make($request->password),
 
-            // NUEVOS CAMPOS
-            'cedula'       => $request->cedula,
-            'direccion'    => $request->direccion,
-            'telefono'     => $request->telefono,
-            'localidad_id' => $request->localidad_id,
+            'cedula'   => $request->cedula,
+            'telefono' => $request->telefono,
+            // OJO: NO asignar direccion ni localidad_id aquí
+            // 'role' => 'user', // opcional: si quieres fijar explícitamente
         ]);
 
         event(new Registered($user));
-
         Auth::login($user);
 
         return redirect(route('dashboard', absolute: false));

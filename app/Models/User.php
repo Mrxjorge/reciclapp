@@ -8,27 +8,22 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
     /**
      * Atributos asignables en masa.
-     *
-     * Importante: incluir los campos extra que agregaste en la migración.
      */
     protected $fillable = [
         'name',
         'email',
         'password',
         'cedula',
-        'direccion',
         'telefono',
-        'localidad_id',
-        'role', // Agregado 'role' para el control de roles
+        'role',   
     ];
 
     /**
-     * Atributos ocultos para serialización.
+     * Atributos ocultos.
      */
     protected $hidden = [
         'password',
@@ -36,7 +31,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * Casts de atributos.
+     * Casts.
      */
     protected function casts(): array
     {
@@ -47,20 +42,19 @@ class User extends Authenticatable
     }
 
     /**
-     * Relación: un usuario pertenece a una localidad.
+     * Relaciones.
+     * Un usuario puede tener muchas recolecciones (pickups).
      */
-    public function localidad()
+    public function pickups()
     {
-        return $this->belongsTo(\App\Models\Localidad::class);
+        return $this->hasMany(Pickup::class);
     }
 
     /**
-     * Método para verificar si el usuario es admin.
-     *
-     * @return bool
+     * Helper de rol.
      */
-    public function isAdmin()
+    public function isAdmin(): bool
     {
-        return $this->role === 'admin'; // Verifica si el rol del usuario es 'admin'
+        return $this->role === 'admin';
     }
 }

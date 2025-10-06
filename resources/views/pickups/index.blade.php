@@ -5,7 +5,8 @@
         </h2>
     </x-slot>
 
-    <div class="py-6 max-w-6xl mx-auto sm:px-6 lg:px-8">
+<div class="py-6 bg-[#f4fbf6] min-h-screen">
+    <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
         @if (session('status'))
             <div class="mb-4 text-green-600">{{ session('status') }}</div>
         @endif
@@ -62,4 +63,5 @@
             </table>
         </div>
     </div>
+</div>
 </x-app-layout>

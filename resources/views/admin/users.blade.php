@@ -6,7 +6,7 @@
         </h2>
     </x-slot>
 
-    <div class="py-6">
+    <div class="py-6 min-h-screen bg-gradient-to-b from-[#f4fbf6] to-white">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             @if (session('status'))
                 <div class="mb-4 p-3 rounded bg-green-100 text-green-800">

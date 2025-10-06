@@ -6,7 +6,7 @@
         </h2>
     </x-slot>
 
-    <div class="py-6">
+<div class="py-6 min-h-screen bg-gradient-to-b from-[#f4fbf6] to-white">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
 
             {{-- Filtros --}}

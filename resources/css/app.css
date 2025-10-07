@@ -25,3 +25,18 @@
 
 /* Sidebar ancho fijo */
 .sidebar{ width: 64px }
+
+/* Badges */
+.badge{ @apply inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wide px-3 py-1 rounded-full }
+.badge--light{ @apply bg-white/20 text-white }
+.badge--brand{ @apply bg-brand-100 text-brand-700 }
+
+/* Barras de progreso */
+.progress{ @apply w-full h-2 rounded-full bg-gray-200 }
+.progress__bar{ @apply h-2 rounded-full bg-gradient-to-r from-brand-400 to-brand-600 }
+
+/* Timeline */
+.timeline{ @apply space-y-4 }
+.timeline__item{ @apply flex gap-3 }
+.timeline__bullet{ @apply mt-1 w-2 h-2 rounded-full bg-brand-400 }
+.timeline__content{ @apply text-sm text-gray-600 }

@@ -7,7 +7,7 @@
         </h2>
     </x-slot>
 
-    <div x-data="{ collapsed:false }" class="min-h-screen bg-gradient-to-b from-[#f4fbf6] to-white">
+    <div x-data="{ collapsed:true }" class="min-h-screen bg-gradient-to-b from-[#f4fbf6] to-white">
 
         <!-- SIDEBAR IZQUIERDA -->
         <aside

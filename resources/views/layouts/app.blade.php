@@ -19,26 +19,15 @@
     {{-- Barra superior (puedes seguir usando la de Breeze) --}}
     <header class="sticky top-0 z-40 bg-white/90 backdrop-blur border-b">
       @include('layouts.navigation')
-    </header>
-
-    {{-- Título de página (opcional) --}}
-    @if(isset($pageTitle) || isset($header))
-      <div class="section py-6">
-        <h1 class="text-2xl font-semibold">
-          {{ $pageTitle ?? $header }}
-        </h1>
-      </div>
-    @endif
+    </header>    
 
     {{-- Contenido principal --}}
-    <main class="section py-10">
+    <main class="section>
       {{ $slot }}
     </main>
 
     {{-- Footer --}}
-    <footer class="py-6 text-center text-xs text-gray-500">
-      © {{ date('Y') }} {{ config('app.name', 'Reciclapp') }} — Gestión de residuos
-    </footer>
+    
   </div>
 </body>
 </html>

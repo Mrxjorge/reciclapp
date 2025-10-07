@@ -1,10 +1,10 @@
-<x-app-layout>
+<x-app-layout full-width>
   <x-slot name="header">
     <span class="sr-only">Dashboard</span>
   </x-slot>
 
   <div class="w-full">
-    <div class="flex">
+    <div class="flex min-h-screen">
       @include('layouts._sidebar')
 
       <div class="flex-1 bg-gray-50 min-h-screen">
@@ -25,7 +25,7 @@
                     </p>
                   </div>
                   <div class="flex flex-wrap gap-3">
-                    <a href="{{ url('/u/programar') }}" class="btn btn--primary bg-white text-brand-700 hover:bg-brand-100">
+                    <a href="{{ url('/pickups') }}" class="btn btn--primary bg-white text-brand-700 hover:bg-brand-100">
                       Programar recolección
                     </a>
                     <a href="{{ url('/u/puntos') }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-white/40 text-white hover:bg-white/10">
@@ -63,7 +63,7 @@
                 </div>
                 <ul class="mt-4 space-y-3">
                   <li>
-                    <a href="{{ url('/u/programar') }}" class="flex items-center gap-3 rounded-2xl border border-gray-100 px-4 py-3 hover:border-brand-300 hover:bg-brand-50/60 transition">
+                    <a href="{{ url('/pickups') }}" class="flex items-center gap-3 rounded-2xl border border-gray-100 px-4 py-3 hover:border-brand-300 hover:bg-brand-50/60 transition">
                       <span class="text-xl">📍</span>
                       <div>
                         <p class="font-medium">Programar recolección puntual</p>
@@ -126,7 +126,7 @@
                 <span>Recordatorio automático 2h antes.</span>
               </div>
               <div class="mt-5 flex items-center gap-3">
-                <a href="{{ url('/u/programar') }}" class="btn btn--outline text-sm">Reprogramar</a>
+                <a href="{{ url('/pickups') }}" class="btn btn--outline text-sm">Reprogramar</a>
                 <a href="{{ url('/u/historial') }}" class="text-sm font-medium text-brand-700">Ver lista completa</a>
               </div>
             </div>

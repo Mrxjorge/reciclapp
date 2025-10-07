@@ -1,7 +1,7 @@
 {{-- resources/views/admin/pickups.blade.php --}}
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+        <h2 class="text-center text-4xl md:text-5xl font-extrabold text-emerald-900">
             {{ __('Administración: Recolecciones') }}
         </h2>
     </x-slot>

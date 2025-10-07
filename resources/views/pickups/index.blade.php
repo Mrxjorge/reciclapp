@@ -1,19 +1,15 @@
 {{-- resources/views/pickups/index.blade.php --}}
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+        <h2 class="text-center text-4xl md:text-5xl font-extrabold text-emerald-900">
             {{ __('Mis recolecciones') }}
         </h2>
     </x-slot>
 
     <div x-data="{ collapsed:true }" class="min-h-screen bg-gradient-to-b from-[#f4fbf6] to-white">
-
-        <!-- SIDEBAR -->
         <aside
             class="fixed inset-y-0 left-0 z-40 bg-emerald-900 text-white transition-all duration-200 ease-in-out shadow-lg"
             :class="collapsed ? 'w-16' : 'w-64'">
-
-            <!-- Encabezado + botón hamburguesa -->
             <div class="h-16 flex items-center justify-between px-3">
                 <span x-show="!collapsed" class="text-lg font-semibold tracking-wide">Reciclapp</span>
                 <button @click="collapsed = !collapsed"
@@ -30,34 +26,26 @@
                     . ($active ? 'bg-emerald-800' : 'hover:bg-emerald-800');
             @endphp
 
-            <!-- Navegación -->
             <nav class="mt-2 space-y-1 px-2">
-                <!-- Dashboard -->
                 <a href="{{ route('dashboard') }}"
                    class="{{ $link(request()->routeIs('dashboard')) }}"
                    :class="{'justify-center': collapsed}" title="Dashboard">
-                    <svg class="w-6 h-6 shrink-0" fill="none" stroke="currentColor" stroke-width="2"
-                         viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                              d="M3 12l9-9 9 9M4 10v10h6V14h4v6h6V10"/>
+                    <svg class="w-6 h-6 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l9-9 9 9M4 10v10h6V14h4v6h6V10"/>
                     </svg>
                     <span x-show="!collapsed" class="truncate">Dashboard</span>
                 </a>
 
-                <!-- Mis Recolecciones -->
                 <a href="{{ route('pickups.index') }}"
                    class="{{ $link(request()->routeIs('pickups.*')) }}"
                    :class="{'justify-center': collapsed}" title="Mis Recolecciones">
-                    <svg class="w-6 h-6 shrink-0" fill="none" stroke="currentColor" stroke-width="2"
-                         viewBox="0 0 24 24">
+                    <svg class="w-6 h-6 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h10"/>
                     </svg>
                     <span x-show="!collapsed" class="truncate">Mis Recolecciones</span>
                 </a>
 
-                {{-- 🔒 Solo mostrar si el rol NO es "user" --}}
                 @if(auth()->check() && auth()->user()->role !== 'user')
-                    <!-- Usuarios (solo admin) -->
                     <a href="{{ route('admin.users.index') }}"
                        class="{{ $link(request()->routeIs('admin.users.*')) }}"
                        :class="{'justify-center': collapsed}" title="Usuarios">
@@ -68,7 +56,6 @@
                         <span x-show="!collapsed" class="truncate">Usuarios</span>
                     </a>
 
-                    <!-- Recolecciones (Admin) -->
                     <a href="{{ route('admin.pickups.index') }}"
                        class="{{ $link(request()->routeIs('admin.pickups.*')) }}"
                        :class="{'justify-center': collapsed}" title="Recolecciones">
@@ -82,7 +69,6 @@
             </nav>
         </aside>
 
-        <!-- CONTENIDO PRINCIPAL -->
         <div class="transition-all duration-200 ease-in-out"
              :class="collapsed ? 'lg:ml-16' : 'lg:ml-64'">
 
@@ -93,14 +79,47 @@
                     <div class="mb-4 text-green-600">{{ session('status') }}</div>
                 @endif
 
-                <div class="mb-4">
-                    <a href="{{ route('pickups.create') }}"
-                       class="inline-flex items-center px-4 py-2 bg-emerald-900 text-white rounded">
-                        Programar nueva recolección
-                    </a>
-                </div>
+                {{-- Filtros --}}
+                <form method="GET" action="{{ route('pickups.index') }}"
+                      class="bg-white rounded-xl border border-emerald-200 shadow p-4 md:p-5 grid gap-3 md:grid-cols-12">
+                    <div class="md:col-span-3">
+                        <label class="block text-xs font-medium mb-1">Fecha inicial</label>
+                        <input type="date" name="desde" value="{{ request('desde') }}" class="w-full">
+                    </div>
 
-                <div class="bg-white dark:bg-gray-800 shadow sm:rounded-lg overflow-x-auto">
+                    <div class="md:col-span-3">
+                        <label class="block text-xs font-medium mb-1">Fecha final</label>
+                        <input type="date" name="hasta" value="{{ request('hasta') }}" class="w-full">
+                    </div>
+
+                    <div class="md:col-span-3">
+                        <label class="block text-xs font-medium mb-1">Tipo de residuo</label>
+                        <select name="tipo" class="w-full">
+                            <option value="">Todos</option>
+                            <option value="organico"   @selected(request('tipo')==='organico')>Orgánica</option>
+                            <option value="inorganico" @selected(request('tipo')==='inorganico')>Inorgánica</option>
+                            <option value="peligroso"  @selected(request('tipo')==='peligroso')>Peligrosa</option>
+                        </select>
+                    </div>
+
+                    <div class="md:col-span-2">
+                        <label class="block text-xs font-medium mb-1">Estado</label>
+                        <select name="estado" class="w-full">
+                            <option value="">Todos</option>
+                            <option value="programada" @selected(request('estado')==='programada')>Programada</option>
+                            <option value="completada" @selected(request('estado')==='completada')>Completada</option>
+                            <option value="cancelada"  @selected(request('estado')==='cancelada')>Cancelada</option>
+                        </select>
+                    </div>
+
+                    <div class="md:col-span-1 flex items-end">
+                        <button class="w-full px-4 py-2 rounded bg-emerald-600 text-white hover:bg-emerald-700">
+                            Filtrar
+                        </button>
+                    </div>
+                </form>
+
+                <div class="mt-4 bg-white dark:bg-gray-800 shadow sm:rounded-lg overflow-x-auto">
                     <table class="min-w-full text-sm">
                         <thead class="bg-gray-50 dark:bg-gray-700">
                             <tr class="text-left">
@@ -139,15 +158,32 @@
                             @empty
                                 <tr>
                                     <td class="px-4 py-5 text-center" colspan="8">
-                                        Aún no tienes recolecciones.
+                                        Sin resultados para los filtros seleccionados.
                                     </td>
                                 </tr>
                             @endforelse
                         </tbody>
                     </table>
                 </div>
+
+                <div class="flex flex-col md:flex-row gap-3 md:items-center md:justify-between mt-4">
+                    <a href="{{ route('pickups.create') }}"
+                       class="inline-flex items-center justify-center px-5 py-2 rounded bg-emerald-700 text-white hover:bg-emerald-800">
+                        Programar nueva recolección
+                    </a>
+
+                    <a href="{{ route('pickups.export', request()->query()) }}"
+                       class="inline-flex items-center justify-center px-5 py-2 rounded bg-emerald-900 text-white hover:bg-emerald-950">
+                        Descargar CSV
+                    </a>
+                </div>
+
+                <div class="mt-4">
+                    {{ $pickups->links() }}
+                </div>
             </div>
         </div>
     </div>
 </x-app-layout>
+
 

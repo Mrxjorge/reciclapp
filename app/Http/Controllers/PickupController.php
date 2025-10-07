@@ -21,16 +21,31 @@ class PickupController extends Controller
         'Bosa' => Carbon::SUNDAY, 'Kennedy' => Carbon::SUNDAY,
     ];
 
-    public function index()
-    {
-        $pickups = Pickup::with('localidad')
-            ->where('user_id', Auth::id())
-            ->orderByDesc('fecha_programada')
-            ->orderBy('hora_programada')
-            ->get();
+public function index(Request $request)
+{
+    $q = Pickup::with('localidad')
+        ->where('user_id', Auth::id());
 
-        return view('pickups.index', compact('pickups'));
+    if ($request->filled('desde')) {
+        $q->whereDate('fecha_programada', '>=', $request->date('desde'));
     }
+    if ($request->filled('hasta')) {
+        $q->whereDate('fecha_programada', '<=', $request->date('hasta'));
+    }
+    if ($request->filled('tipo')) {
+        $q->where('tipo_residuo', $request->string('tipo'));
+    }
+    if ($request->filled('estado')) {
+        $q->where('estado', $request->string('estado'));
+    }
+
+    $pickups = $q->orderByDesc('fecha_programada')
+        ->orderBy('hora_programada')
+        ->paginate(10)
+        ->withQueryString(); // conserva filtros en la paginación
+
+    return view('pickups.index', compact('pickups'));
+}
 
     public function create()
     {
@@ -222,4 +237,60 @@ class PickupController extends Controller
 
         return redirect()->route('pickups.index')->with('status', 'Recolección eliminada correctamente');
     }
+    public function export(Request $request)
+{
+    $q = Pickup::with('localidad')
+        ->where('user_id', Auth::id());
+
+    if ($request->filled('desde')) {
+        $q->whereDate('fecha_programada', '>=', $request->date('desde'));
+    }
+    if ($request->filled('hasta')) {
+        $q->whereDate('fecha_programada', '<=', $request->date('hasta'));
+    }
+    if ($request->filled('tipo')) {
+        $q->where('tipo_residuo', $request->string('tipo'));
+    }
+    if ($request->filled('estado')) {
+        $q->where('estado', $request->string('estado'));
+    }
+
+    $rows = $q->orderByDesc('fecha_programada')
+        ->orderBy('hora_programada')
+        ->get([
+            'tipo_residuo',
+            'direccion',
+            'localidad_id',
+            'fecha_programada',
+            'hora_programada',
+            'modalidad',
+            'estado',
+        ]);
+
+    $filename = 'mis_recolecciones_' . now()->format('Ymd_His') . '.csv';
+
+    return response()->streamDownload(function () use ($rows) {
+        $out = fopen('php://output', 'w');
+        fputcsv($out, ['Tipo', 'Dirección', 'Localidad', 'Fecha', 'Hora', 'Modalidad', 'Estado']);
+
+        foreach ($rows as $r) {
+            fputcsv($out, [
+                $r->tipo_residuo,
+                $r->direccion,
+                optional($r->localidad)->nombre,
+                optional($r->fecha_programada)?->format('Y-m-d'),
+                $r->hora_programada
+                    ? \Illuminate\Support\Carbon::parse($r->hora_programada)->format('H:i')
+                    : null,
+                $r->modalidad,
+                $r->estado,
+            ]);
+        }
+        fclose($out);
+    }, $filename, [
+        'Content-Type' => 'text/csv; charset=UTF-8',
+        'Cache-Control' => 'no-store, no-cache',
+    ]);
+}
+
 }

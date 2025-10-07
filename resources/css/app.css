@@ -1,3 +1,27 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Tarjeta Estilo glass sutil (para login o modales) */
+.glass{ background:rgba(255,255,255,.85); backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,.5) }
+
+/* Contenedores */
+.section{ @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8; }
+
+/* Sombra y cards suaves */
+.shadow-soft{ box-shadow: 0 6px 22px rgba(0,0,0,.06) }
+.card{ @apply bg-white rounded-2xl shadow-soft p-5 }
+
+/* Chips */
+.chip{ @apply text-xs px-2.5 py-1 rounded-full ring-1 }
+.chip--brand{ @apply bg-brand-50 text-brand-700 ring-brand-200 }
+.chip--blue{ @apply bg-blue-50 text-inorganico ring-blue-200 }
+.chip--red{ @apply bg-red-50 text-peligroso ring-red-200 }
+
+/* Botón principal */
+.btn{ @apply inline-flex items-center gap-2 px-4 py-2 rounded-xl transition }
+.btn--primary{ @apply bg-brand-500 text-white hover:bg-brand-600 }
+.btn--outline{ @apply ring-1 ring-brand-300 text-brand-700 hover:bg-brand-50 }
+
+/* Sidebar ancho fijo */
+.sidebar{ width: 64px }

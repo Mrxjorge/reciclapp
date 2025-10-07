@@ -6,9 +6,11 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PickupController;
 use App\Http\Controllers\AdminController;
 
-Route::get('/', fn() => view('dashboard'))
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
+// Route::get('/', fn() => view('dashboard'))
+//     ->middleware(['auth', 'verified'])
+//     ->name('dashboard');
+
+Route::get('/', fn() => view('welcome'));
 
 Route::get('/dashboard', DashboardController::class)
     ->middleware(['auth', 'verified'])

@@ -22,7 +22,7 @@
     </header>    
 
     {{-- Contenido principal --}}
-    <main class="section>
+    <main>
       {{ $slot }}
     </main>
 

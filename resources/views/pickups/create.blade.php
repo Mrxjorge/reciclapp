@@ -3,7 +3,18 @@
         <span class="sr-only">Programar Recolección</span>
     </x-slot>
 
-    <div x-data="{ collapsed:true, tipo: '{{ old('tipo_residuo') }}' }" class="min-h-screen bg-gradient-to-b from-[#f4fbf6] to-white">
+    <div
+        x-data="{
+            collapsed:true,
+            tipo: '{{ old('tipo_residuo') }}',
+            direccion: '{{ old('direccion') }}',
+            localidadId: '{{ old('localidad_id') }}',
+            localidadNombre: '',
+            fecha: '{{ old('fecha_programada') }}',
+            hora: '{{ old('hora_programada') }}'
+        }"
+        class="min-h-screen bg-gradient-to-b from-[#f4fbf6] to-white"
+    >
 
         <aside class="fixed inset-y-0 left-0 z-50 bg-emerald-900 text-white shadow-lg"
                :class="collapsed ? 'w-16' : 'w-64'">
@@ -60,6 +71,7 @@
 
                 <div class="grid grid-cols-1 lg:grid-cols-2 lg:grid-rows-2 gap-6">
 
+                    {{-- PASO 1 --}}
                     <section id="paso-1"
                              class="bg-white shadow sm:rounded-lg border border-emerald-200 p-4
                                     order-1 lg:order-none lg:col-start-1 lg:row-start-1">
@@ -92,6 +104,7 @@
                         </div>
                     </section>
 
+                    {{-- PASO 3 --}}
                     <section id="paso-3"
                              class="bg-white shadow sm:rounded-lg border border-emerald-200 p-4
                                     order-2 lg:order-none lg:col-start-2 lg:row-start-1">
@@ -100,33 +113,40 @@
                             <div>
                                 <label for="fecha_programada" class="block text-sm font-medium mb-1">Fecha Programada</label>
                                 <input id="fecha_programada" name="fecha_programada" type="date" class="w-full"
+                                       x-model="fecha"
                                        value="{{ old('fecha_programada') }}">
                                 <x-input-error :messages="$errors->get('fecha_programada')" class="mt-2" />
                             </div>
                             <div>
                                 <label for="hora_programada" class="block text-sm font-medium mb-1">Hora Programada</label>
                                 <input id="hora_programada" name="hora_programada" type="time" class="w-full"
+                                       x-model="hora"
                                        value="{{ old('hora_programada') }}">
                                 <x-input-error :messages="$errors->get('hora_programada')" class="mt-2" />
                             </div>
                         </div>
                     </section>
 
+                    {{-- PASO 2 --}}
                     <section id="paso-2"
                              class="bg-white shadow sm:rounded-lg border border-emerald-200 p-4
                                     order-3 lg:order-none lg:col-start-1 lg:row-start-2">
-                        <h3 class="text-lg font-semibold mb-3">Paso 2: Frecuencia</h3>
+                        <h3 class="text-lg font-semibold mb-3">Paso 2: Ubicación</h3>
                         <div class="grid gap-3">
                             <div>
                                 <label for="direccion" class="block text-sm font-medium mb-1">Dirección</label>
                                 <input id="direccion" name="direccion" type="text" class="w-full"
+                                       x-model="direccion"
                                        value="{{ old('direccion') }}" required>
                                 <x-input-error :messages="$errors->get('direccion')" class="mt-2" />
                             </div>
 
                             <div>
                                 <label for="localidad_id" class="block text-sm font-medium mb-1">Localidad</label>
-                                <select id="localidad_id" name="localidad_id" class="w-full" required>
+                                <select id="localidad_id" name="localidad_id" class="w-full"
+                                        x-model="localidadId"
+                                        @change="localidadNombre = $event.target.selectedOptions[0]?.text || ''"
+                                        required>
                                     <option value="">-- Seleccione --</option>
                                     @foreach(\App\Models\Localidad::orderBy('nombre')->get() as $loc)
                                         <option value="{{ $loc->id }}" @selected(old('localidad_id') == $loc->id)>{{ $loc->nombre }}</option>
@@ -141,10 +161,45 @@
                         </div>
                     </section>
 
+                    {{-- PASO 4 --}}
                     <section id="paso-4"
                              class="bg-white shadow sm:rounded-lg border border-emerald-200 p-4
                                     order-4 lg:order-none lg:col-start-2 lg:row-start-2">
                         <h3 class="text-lg font-semibold mb-3">Paso 4: Confirmación</h3>
+
+                        {{-- RESUMEN EN VIVO --}}
+                        <div class="mb-4 rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm">
+                            <dl class="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-6">
+                                <div class="flex justify-between sm:block">
+                                    <dt class="font-medium text-emerald-900">Tipo</dt>
+                                    <dd class="text-gray-800"
+                                        x-text="tipo==='organico' ? 'Orgánico'
+                                            : (tipo==='inorganico' ? 'Inorgánico'
+                                            : (tipo==='peligroso' ? 'Peligroso' : '—'))"></dd>
+                                </div>
+
+                                <div class="flex justify-between sm:block">
+                                    <dt class="font-medium text-emerald-900">Dirección</dt>
+                                    <dd class="text-gray-800" x-text="direccion || '—'"></dd>
+                                </div>
+
+                                <div class="flex justify-between sm:block">
+                                    <dt class="font-medium text-emerald-900">Localidad</dt>
+                                    <dd class="text-gray-800" x-text="localidadNombre || '—'"></dd>
+                                </div>
+
+                                <div class="flex justify-between sm:block">
+                                    <dt class="font-medium text-emerald-900">Fecha</dt>
+                                    <dd class="text-gray-800" x-text="fecha || '—'"></dd>
+                                </div>
+
+                                <div class="flex justify-between sm:block">
+                                    <dt class="font-medium text-emerald-900">Hora</dt>
+                                    <dd class="text-gray-800" x-text="hora || '—'"></dd>
+                                </div>
+                            </dl>
+                        </div>
+
                         <div class="flex items-center gap-4">
                             <button type="submit" class="px-5 py-2 rounded-md bg-emerald-900 text-white font-semibold">
                                 PROGRAMAR
@@ -161,9 +216,9 @@
 
     <script>
         const tipoSelectLike = document.querySelectorAll('input[name="tipo_residuo"]');
-        const fecha  = document.getElementById('fecha_programada');
-        const hora   = document.getElementById('hora_programada');
-        const hint   = document.getElementById('hint-organico');
+        const fechaEl  = document.getElementById('fecha_programada');
+        const horaEl   = document.getElementById('hora_programada');
+        const hint     = document.getElementById('hint-organico');
 
         function currentTipo() {
             const el = document.querySelector('input[name="tipo_residuo"]:checked');
@@ -174,20 +229,20 @@
             const tipo = currentTipo();
 
             if (tipo === 'organico') {
-                fecha.disabled = true;  fecha.required = false; fecha.value = '';
-                hora.disabled  = true;  hora.required  = false; hora.value  = '';
+                fechaEl.disabled = true;  fechaEl.required = false; fechaEl.value = '';
+                horaEl.disabled  = true;  horaEl.required  = false; horaEl.value  = '';
                 hint.classList.remove('hidden');
             } else if (tipo === 'inorganico') {
-                fecha.disabled = false; fecha.required = true;
-                hora.disabled  = false; hora.required  = false;
+                fechaEl.disabled = false; fechaEl.required = true;
+                horaEl.disabled  = false; horaEl.required  = false;
                 hint.classList.add('hidden');
             } else if (tipo === 'peligroso') {
-                fecha.disabled = false; fecha.required = true;
-                hora.disabled  = false; hora.required  = true;
+                fechaEl.disabled = false; fechaEl.required = true;
+                horaEl.disabled  = false; horaEl.required  = true;
                 hint.classList.add('hidden');
             } else {
-                fecha.disabled = false; fecha.required = false;
-                hora.disabled  = false; hora.required  = false;
+                fechaEl.disabled = false; fechaEl.required = false;
+                horaEl.disabled  = false; horaEl.required  = false;
                 hint.classList.add('hidden');
             }
         }

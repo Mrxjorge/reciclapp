@@ -23,6 +23,9 @@ class PickupController extends Controller
 
 public function index(Request $request)
 {
+    if (auth()->check() && auth()->user()->role === 'admin') {
+    return redirect()->route('admin.pickups.index');
+    }
     $q = Pickup::with('localidad')
         ->where('user_id', Auth::id());
 
